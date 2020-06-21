@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>POD Browser</title>
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+  <style>
+    .folder {
+      background: yellow;
+    }
+    .file {
+      background: red;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container-fluid">
+    <!-- Content here -->
+    <p>Click the button to display the hostname of the current URL.</p>
+
+    <button onclick="myFunction()">Try it</button>
+
+    <p id="demo"></p>
+    <p id="webId"></p>
+    <p id="user_storage"></p>
+
+    <button class="btn btn-primary">OK</button>
+
+    <ul id="browser" class="list-group">
+      <li class="list-group-item">Cras justo odio</li>
+      <li class="list-group-item">Dapibus ac facilisis in</li>
+      <li class="list-group-item">Morbi leo risus</li>
+      <li class="list-group-item">Porta ac consectetur ac</li>
+      <li class="list-group-item">Vestibulum at eros</li>
+    </ul>
+
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Dropdown button
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Action</a>
+        <a class="dropdown-item" href="#">Another action</a>
+        <a class="dropdown-item" href="#">Something else here</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function myFunction() {
+      var x = location.hostname;
+      document.getElementById("demo").innerHTML= x;
+    }
+  </script>
+
+
+  <script src="https://solid.github.io/solid-auth-client/dist/solid-auth-client.bundle.js"></script>
+  <script src="https://solid.github.io/query-ldflex/dist/solid-query-ldflex.bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/solid-file-client@1.0.0/dist/window/solid-file-client.bundle.js"></script>
+
+  <script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+  crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
+
+
+</body>
+</html>
+
+
+<script>
+  const auth = solid.auth
+  const fc   = new SolidFileClient(auth)
+  console.log("FC",fc)
+  let storage = ""
+
+  solid.auth.trackSession(session => {
+    if (!session){
+      console.log('The user is not logged in')
+      document.getElementById("webId").innerHTML= "not logged";
+      storage = ""
+    }
+    else{
+      console.log(`The user is ${session.webId}`)
+      document.getElementById("webId").innerHTML= `${session.webId}`;
+      test_ldflex()
+
+    }
+  })
+
+  async function test_ldflex(){
+    const st = await solid.data.user.storage;
+    storage = `${st}`
+    console.log("SOLID DATA storage", storage)
+    document.getElementById("user_storage").innerHTML= storage;
+    // alert(`Welcome, ${await user.storage}!`);
+    //  await readStorage(storage)
+
+  }
+
+
+
+  async function read(path){
+    let f = await fc.readFolder( path)
+    console.log("HERE",f)
+    $("#browser").empty()
+    $("#browser").append($("<li>").attr("class", "list-group-item")
+      .click(function() {
+        read(f.parent)
+      })
+      .text(".. "+f.parent));
+      f.folders.forEach(fo => {
+        $("#browser").append($("<li>").attr("class", "list-group-item folder")
+          .click(function() {
+            read(fo.url)
+          })
+          .text("Folder "+fo.name));
+        })
+
+        f.files.forEach(fi => {
+          $("#browser")
+          .append($("<li>")
+            .attr("class", "list-group-item file")
+            .click(function() {
+              read(fi.url)
+            })
+            .text("File "+fi.name));
+          })
+        }
+
+        //fileclient
+        async function readStorage(st){
+          let content = await fc.readFolder( st )
+          console.log("CONTENT",content)
+        }
+
+        read(location.href)
+      </script>
