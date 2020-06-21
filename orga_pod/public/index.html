@@ -7,38 +7,65 @@
   <title>POD Browser</title>
 
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
+  <link href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" rel="stylesheet">
   <style>
-    .folder {
-      background: yellow;
-    }
-    .file {
-      background: red;
-    }
-  </style>
+    /*  .folder {
+    background: yellow;
+  }
+  .file {
+  background: red;
+}
+.folder:before {
+content: "this is ";
+font-weight: bold;
+font-style: italic;
+}
+.file:before {
+content: "this FILE ";
+font-weight: bold;
+font-style: italic;
+}*/
+.parent:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f062";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+}
+.folder:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f07b";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+}
+.file:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f15b";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+}
+</style>
 
 </head>
 <body>
   <div class="container-fluid">
-    <!-- Content here -->
-    <p>Click the button to display the hostname of the current URL.</p>
 
-    <button onclick="myFunction()">Try it</button>
 
-    <p id="demo"></p>
-    <p id="webId"></p>
-    <p id="user_storage"></p>
-
-    <button class="btn btn-primary">OK</button>
-
+    POD Browser with Solid-file-client :
     <ul id="browser" class="list-group">
-      <li class="list-group-item">Cras justo odio</li>
-      <li class="list-group-item">Dapibus ac facilisis in</li>
-      <li class="list-group-item">Morbi leo risus</li>
-      <li class="list-group-item">Porta ac consectetur ac</li>
-      <li class="list-group-item">Vestibulum at eros</li>
+      <li class="list-group-item">Loading File Browser... Please Wait...</li>
     </ul>
 
+    File content :
+    <textarea id="content" rows="10" cols="66"></textarea>
+
+    <br>
+    <hr>Tests<hr>
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Dropdown button
@@ -49,7 +76,45 @@
         <a class="dropdown-item" href="#">Something else here</a>
       </div>
     </div>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+      Launch demo modal
+    </button>
+    <!-- Content here -->
 
+    Tripledoc : <div id="name"></div>
+    <p>Click the button to display the hostname of the current URL.</p>
+
+    <button onclick="myFunction()">Try it</button>
+
+    <p id="demo"></p>
+    <p id="webId"></p>
+    Ldflex : <p id="user_storage"></p>
+
+    <button class="btn btn-primary">OK</button>
+
+
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -59,88 +124,135 @@
     }
   </script>
 
-
   <script src="https://solid.github.io/solid-auth-client/dist/solid-auth-client.bundle.js"></script>
+
   <script src="https://solid.github.io/query-ldflex/dist/solid-query-ldflex.bundle.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/solid-file-client@1.0.0/dist/window/solid-file-client.bundle.js"></script>
 
-  <script
-  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
-  crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@popperjs/core@2"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
+
+  <!--https://codesandbox.io/s/hardcore-elion-11ko6-->
+
+  <script src="https://wzrd.in/standalone/n3@latest"></script>
+  <script src="https://unpkg.com/tripledoc@latest/umd/index.js"></script>
+  <script>
+    Tripledoc.fetchDocument("https://vincentt.inrupt.net/profile/card").then(
+    doc => {
+      const person = doc.getSubject(
+      "https://vincentt.inrupt.net/profile/card#me"
+      );
+      console.log("PRESON",person)
+      document.getElementById(
+      "name"
+      ).textContent = `This person's name is ${person.getString(
+        "http://xmlns.com/foaf/0.1/name"
+        )}.`;
+      }
+      );
+    </script>
+
+    <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+    crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
+
+  </body>
+  </html>
 
 
-</body>
-</html>
+  <script>
+    const auth = solid.auth
+    const fc   = new SolidFileClient(auth)
+    console.log("FC",fc)
+    let storage = ""
 
+    solid.auth.trackSession(session => {
+      if (!session){
+        console.log('The user is not logged in')
+        document.getElementById("webId").innerHTML= "not logged";
+        storage = ""
+      }
+      else{
+        console.log(`The user is ${session.webId}`)
+        document.getElementById("webId").innerHTML= `${session.webId}`;
+        test_ldflex()
 
-<script>
-  const auth = solid.auth
-  const fc   = new SolidFileClient(auth)
-  console.log("FC",fc)
-  let storage = ""
+      }
+    })
 
-  solid.auth.trackSession(session => {
-    if (!session){
-      console.log('The user is not logged in')
-      document.getElementById("webId").innerHTML= "not logged";
-      storage = ""
+    async function test_ldflex(){
+      const st = await solid.data.user.storage;
+      storage = `${st}`
+      console.log("SOLID DATA storage", storage)
+      document.getElementById("user_storage").innerHTML= storage;
+      // alert(`Welcome, ${await user.storage}!`);
+      //  await readStorage(storage)
+
     }
-    else{
-      console.log(`The user is ${session.webId}`)
-      document.getElementById("webId").innerHTML= `${session.webId}`;
-      test_ldflex()
 
+    function read(path, type="folder"){
+      if (type=="folder"){
+        readFolder(path)
+      }else{
+        readFile(path)
+      }
     }
-  })
 
-  async function test_ldflex(){
-    const st = await solid.data.user.storage;
-    storage = `${st}`
-    console.log("SOLID DATA storage", storage)
-    document.getElementById("user_storage").innerHTML= storage;
-    // alert(`Welcome, ${await user.storage}!`);
-    //  await readStorage(storage)
-
-  }
+    async function readFile(path){
+      console.log(path)
+      let content = await fc.readFile( path )
+      console.log("Content", content)
+      document.getElementById('content').innerHTML = content
+      readFolder(path.substring(0, path.lastIndexOf("/") + 1))
+    }
 
 
-
-  async function read(path){
-    let f = await fc.readFolder( path)
-    console.log("HERE",f)
-    $("#browser").empty()
-    $("#browser").append($("<li>").attr("class", "list-group-item")
-      .click(function() {
-        read(f.parent)
-      })
-      .text(".. "+f.parent));
-      f.folders.forEach(fo => {
-        $("#browser").append($("<li>").attr("class", "list-group-item folder")
-          .click(function() {
-            read(fo.url)
-          })
-          .text("Folder "+fo.name));
+    async function readFolder(path){
+      let f = await fc.readFolder( path)
+      console.log("HERE",f)
+      $("#browser").empty()
+      $("#browser").append($("<li>").attr("class", "list-group-item parent")
+        .click(function() {
+          read(f.parent)
+          document.getElementById('content').innerHTML = ""
         })
-
-        f.files.forEach(fi => {
-          $("#browser")
-          .append($("<li>")
-            .attr("class", "list-group-item file")
+        .text(".. "+f.parent));
+        f.folders.forEach(fo => {
+          $("#browser").append($("<li>").attr("class", "list-group-item folder")
             .click(function() {
-              read(fi.url)
+              read(fo.url, fo.type)
+              document.getElementById('content').innerHTML = ""
             })
-            .text("File "+fi.name));
+            .text("Folder "+fo.name));
           })
-        }
 
-        //fileclient
-        async function readStorage(st){
-          let content = await fc.readFolder( st )
-          console.log("CONTENT",content)
-        }
+          f.files.forEach(fi => {
+            $("#browser")
+            .append($("<li>")
+              .attr("class", "list-group-item file")
+              .click(function() {
+                read(fi.url, fi.type)
+              })
+              .text("File "+fi.name));
+            })
+          }
 
-        read(location.href)
-      </script>
+          //fileclient
+          async function readStorage(st){
+            let content = await fc.readFolder( st )
+            console.log("CONTENT",content)
+          }
+          let path = location.href
+          //   console.log( await fc.readHead(path) )
+          if (location.href.endsWith('#')){
+            path = location.href.slice(0, -1);
+          }
+          // console.log( await fc.readHead(path) )
+          console.log("PATH",path)
+          let type = "file"
+          path.split('/').pop().indexOf('.') > -1 ? type = "file" : type = "folder"
+
+
+          read(path, type)
+        </script>
