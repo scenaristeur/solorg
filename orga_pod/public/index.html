@@ -74,23 +74,42 @@ i{
     <div class="row header" style="height: 100px;">Header</div>
 
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-2" id="menu">
         Menu
-        <div class="dropdown">
+        <div class="dropdown" id="new-menu">
           <button class="btn btn-primary-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             New
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#"> <i class="fas fa-file-plus"></i>File</a>
-            <a class="dropdown-item" href="#"> <i class="fas fa-folder-plus"></i>Folder</a>
+            <button class="dropdown-item" type="button"> <i class="fas fa-file-plus"></i>File</button>
+            <button class="dropdown-item" type="button"> <i class="fas fa-folder-plus"></i>Folder</button>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#"><i class="fas fa-file-upload"></i>Import File</a>
-            <a class="dropdown-item" href="#"><i class="fas fa-upload"></i>Import Folder</a>
+            <button class="dropdown-item" type="button"><i class="fas fa-file-upload"></i>Import File</button>
+            <button class="dropdown-item" type="button"><i class="fas fa-upload"></i>Import Folder</button>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Turtle</a>
-            <a class="dropdown-item" href="#">Spoggy</a>
+            <button class="dropdown-item" type="button">Turtle</button>
+            <button class="dropdown-item" type="button">Spoggy</button>
           </div>
         </div>
+
+        <div class="dropdown" id="hola-menu">
+          <button class="btn btn-primary-outline dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Hola
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <button class="dropdown-item" type="button" shape="https://holacratie.solid.community/public/Schema/organization.shex">Organization</button>
+            <button class="dropdown-item" type="button" shape="https://holacratie.solid.community/public/Schema/user.shex">User</button>
+            <button class="dropdown-item" type="button" shape="https://holacratie.solid.community/public/Schema/role.shex">Role</button>
+            <button class="dropdown-item" type="button" shape="https://holacratie.solid.community/public/Schema/tension.shex">Tension</button>
+            <button class="dropdown-item" type="button">Cercle</button>
+            <button class="dropdown-item" type="button">Reunion / Meeting</button>
+            <button class="dropdown-item" type="button">Projet</button>
+            <button class="dropdown-item" type="button">Indicateur</button>
+          </div>
+        </div>
+
+
+
       </div>
 
       <div class="col-sm-12 col-md-6">
@@ -121,8 +140,12 @@ i{
   <hr>Tests<hr>
 
   <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-    Launch demo modal
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-editor">
+    Launch demo modal Editor
+  </button>
+
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-shape">
+    Launch demo modal Shape
   </button>
   <!-- Content here -->
 
@@ -141,11 +164,32 @@ i{
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div  class="modal fade" id="modal-shape" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal shape</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="form-shape">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-editor" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Editor</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -166,6 +210,28 @@ function myFunction() {
   var x = location.hostname;
   document.getElementById("demo").innerHTML= x;
 }
+</script>
+
+<script>
+let menus = [
+  {label: "New", items: [
+    {label: "File", action: "http"},
+    {label: "Folder", action: "http"},
+    {label: "Import File", action: "http"},
+    {label: "Import Folder", action: "http"},
+    {label: "Turtle", action: "http"},
+    {label: "Spoggy", action: "http"}
+  ]},
+  {label:"Hola", items:[
+    {label: "Organization", shape: "http"},
+    {label: "User", shape: "http"},
+    {label: "Role", shape: "http"},
+    {label: "Tension", shape: "http"},
+    {label: "Cercle", shape: "http"},
+    {label: "Meeting", shape: "http"},
+    {label: "Projet", shape: "http"},
+    {label: "Indicateur", shape: "http"}]}
+  ]
 </script>
 
 <script src="https://solid.github.io/solid-auth-client/dist/solid-auth-client.bundle.js"></script>
@@ -394,6 +460,16 @@ $("#save").on("click", async function(){
     alert(error.message)
     //https://github.com/jeff-zucker/solid-file-client/blob/master/docs/error-handling.md
   }
+})
+
+// menus
+$('#hola-menu .dropdown-item').on('click', function () {
+  //  console.log(e.target.shape)
+  let shape = $(this).attr("shape")
+  console.log(shape)
+  $('#form-shape').html("SHAPE "+shape)
+  $('#modal-shape').modal('show')
+  // do something…
 })
 
 
